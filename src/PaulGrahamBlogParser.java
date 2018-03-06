@@ -12,31 +12,29 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 
-public class ReutersParser {
+public class PaulGrahamBlogParser {
     public static void main(String args[]){
         ArrayList linksToPrint = new ArrayList<String>();
         try {
 
 
-            for (int i = 0; i < 50; i++) {
-                String pageAddress = "https://www.reuters.com/news/archive?view=page&page=" + (i + 1) + "&pageSize=10";
-                System.out.println("Parsing page number " + (i + 1));
+
+                String pageAddress = "http://paulgraham.com/articles.html";
                 Document archivePage;
                 archivePage = Jsoup.connect(pageAddress).get();
-                Elements links = archivePage.select("div.story-content > a[href]");
+                Elements links = archivePage.select("tr > td[width=435] > font > a[href]");
                 System.out.println(links.size() + " links found");
                 for (Element link:links){
-                    String clearLink = "https://www.reuters.com" + StringUtils.substringBetween(link.toString(), "<a href=\"", "\">" );
+                    String clearLink = "http://paulgraham.com/" + StringUtils.substringBetween(link.toString(), "<a href=\"", "\">" );
                     linksToPrint.add(clearLink);
                 }
-                }
-            FileOutputStream fout=new FileOutputStream("reuters_500_links.csv");
+
+            FileOutputStream fout=new FileOutputStream("paul_graham.csv");
             PrintStream csv=new PrintStream(fout);
             for (Object linkToPrint: linksToPrint) {
                 csv.println(linkToPrint);
             }
-            fout.close();
-        }
+            fout.close();        }
         catch (IOException e){
             e.printStackTrace();
         }
